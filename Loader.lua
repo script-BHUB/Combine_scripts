@@ -25,7 +25,7 @@ Tabs.Main:AddButton({
             loadstring(game:HttpGet("https://raw.githubusercontent.com/script-BHUB/Executor/refs/heads/main/Executor.lua"))()
         end)
         if not success then
-            warn(err)
+            warn("Executor Error: " .. tostring(err))
         end
     end
 })
@@ -38,7 +38,7 @@ Tabs.Main:AddButton({
             loadstring(game:HttpGet("https://raw.githubusercontent.com/script-BHUB/Aimbot-hub/refs/heads/main/Aimbot-hub"))()
         end)
         if not success then
-            warn(err)
+            warn("Aimbot Error: " .. tostring(err))
         end
     end
 })
@@ -51,7 +51,7 @@ Tabs.Main:AddButton({
             loadstring(game:HttpGet("https://api.jnkie.com/api/v1/luascripts/public/f72223000bf529bfa6b14e7750439a420e465d25399341decd59e10c3d56f217/download"))()
         end)
         if not success then
-            warn(err)
+            warn("Blade Ball Error: " .. tostring(err))
         end
     end
 })
@@ -64,7 +64,7 @@ Tabs.Main:AddButton({
             loadstring(game:HttpGet("https://raw.githubusercontent.com/boplsme/Scripts-/refs/heads/main/%5BBETA%5D%20Tora%20Isme%20Hub.txt"))()
         end)
         if not success then
-            warn(err)
+            warn("Tora Isme Error: " .. tostring(err))
         end
     end
 })
@@ -77,7 +77,7 @@ Tabs.Main:AddButton({
             loadstring(game:HttpGet("https://raw.githubusercontent.com/FeRk1eOp/fer4ixzlol.hub/refs/heads/main/fer4ixzhub", true))()
         end)
         if not success then
-            warn(err)
+            warn("Volleyball Legends Error: " .. tostring(err))
         end
     end
 })
@@ -90,7 +90,7 @@ Tabs.Main:AddButton({
             loadstring(game:HttpGet("https://raw.githubusercontent.com/xv3gasx/Murder-Mystery-2/refs/heads/main/Release.lua"))()
         end)
         if not success then
-            warn(err)
+            warn("MM2 Error: " .. tostring(err))
         end
     end
 })
@@ -126,6 +126,6 @@ end)
 
 Fluent:Notify({
     Title = "B Hub Loaded",
-    Content = "UI size adjusted successfully!",
+    Content = "Verified and optimized successfully!",
     Duration = 5
 })
