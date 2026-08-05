@@ -81,7 +81,7 @@ tabContainer.Name = "TabContainer"
 tabContainer.Size = UDim2.new(0, 120, 1, -20)
 tabContainer.Position = UDim2.new(0, 10, 0, 10)
 tabContainer.BackgroundTransparency = 1
-tabContainer.CanvasSize = UDim2.new(0, 0, 0, 260)
+tabContainer.CanvasSize = UDim2.new(0, 0, 0, 300)
 tabContainer.ScrollBarThickness = 4
 tabContainer.ZIndex = 2147483647
 tabContainer.Parent = mainFrame
@@ -153,7 +153,7 @@ for i, tabName in ipairs(tabs) do
     pageLayout.SortOrder = Enum.SortOrder.LayoutOrder
     pageLayout.Padding = UDim.new(0, 8)
     pageLayout.Parent = page
-    
+
     local pagePadding = Instance.new("UIPadding")
     pagePadding.PaddingTop = UDim.new(0, 5)
     pagePadding.PaddingBottom = UDim.new(0, 5)
@@ -284,14 +284,12 @@ local function addToggle(parentPage, title, description, defaultState, callback)
     circleCorner.Parent = circle
 
     local toggled = defaultState
-
     toggleFrame.MouseButton1Click:Connect(function()
         toggled = not toggled
         switch.BackgroundColor3 = toggled and Color3.fromRGB(137, 180, 250) or Color3.fromRGB(60, 60, 80)
         circle.Position = toggled and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
         callback(toggled)
     end)
-
     parentPage.CanvasSize = UDim2.new(0, 0, 0, parentPage.UIListLayout.AbsoluteContentSize.Y + 20)
 end
 
@@ -386,10 +384,8 @@ local function addToggleSlider(parentPage, title, minVal, maxVal, defaultVal, ca
         local mouseX = input.Position.X
         local scale = math.clamp((mouseX - pos) / size, 0, 1)
         currentValue = math.floor(minVal + ((maxVal - minVal) * scale))
-        
         sliderFill.Size = UDim2.new(scale, 0, 1, 0)
         valueLabel.Text = tostring(currentValue)
-        
         if enabled then
             callback(currentValue, true)
         end
@@ -420,14 +416,12 @@ local function addToggleSlider(parentPage, title, minVal, maxVal, defaultVal, ca
     toggleButtonHitbox.Text = ""
     toggleButtonHitbox.ZIndex = 2147483647
     toggleButtonHitbox.Parent = switch
-
     toggleButtonHitbox.MouseButton1Click:Connect(function()
         enabled = not enabled
         switch.BackgroundColor3 = enabled and Color3.fromRGB(137, 180, 250) or Color3.fromRGB(60, 60, 80)
         circle.Position = enabled and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
         callback(currentValue, enabled)
     end)
-
     parentPage.CanvasSize = UDim2.new(0, 0, 0, parentPage.UIListLayout.AbsoluteContentSize.Y + 20)
 end
 
@@ -473,7 +467,6 @@ local function addInputBox(parentPage, title, description, placeholder, callback
     textBox.FocusLost:Connect(function(enterPressed)
         callback(textBox.Text)
     end)
-
     parentPage.CanvasSize = UDim2.new(0, 0, 0, parentPage.UIListLayout.AbsoluteContentSize.Y + 20)
 end
 
@@ -539,7 +532,9 @@ local function addDropdown(parentPage, title, items, defaultItem, callback)
 
     local function refreshItems(newItems)
         for _, c in ipairs(listFrame:GetChildren()) do
-            if c:IsA("TextButton") then c:Destroy() end
+            if c:IsA("TextButton") then
+                c:Destroy()
+            end
         end
         for _, item in ipairs(newItems) do
             local itemBtn = Instance.new("TextButton")
@@ -583,7 +578,10 @@ local function addDropdown(parentPage, title, items, defaultItem, callback)
 
     return {
         Refresh = function(newVals, defVal)
-            if defVal then selectedValue = defVal selectButton.Text = tostring(defVal) end
+            if defVal then
+                selectedValue = defVal
+                selectButton.Text = tostring(defVal)
+            end
             refreshItems(newVals)
         end
     }
@@ -628,7 +626,6 @@ addButton(mainPage, "Murder Mystery 2", "MM2 script Keyless", function()
 end)
 
 local playerPage = pages["Player"]
-
 addToggleSlider(playerPage, "WalkSpeed", 16, 1000, 16, function(value, state)
     pcall(function()
         local character = player.Character
@@ -637,7 +634,6 @@ addToggleSlider(playerPage, "WalkSpeed", 16, 1000, 16, function(value, state)
         end
     end)
 end)
-
 addToggleSlider(playerPage, "JumpPower", 50, 1000, 50, function(value, state)
     pcall(function()
         local character = player.Character
@@ -659,28 +655,22 @@ local function startFlying(character)
     local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     if not humanoidRootPart or not humanoid then return end
-    
     humanoid.PlatformStand = true
     humanoid.AutoRotate = false
-    
     bodyVelocity = Instance.new("BodyVelocity")
     bodyVelocity.MaxForce = Vector3.new(1, 1, 1) * 10^6
     bodyVelocity.Velocity = Vector3.zero
     bodyVelocity.Parent = humanoidRootPart
-    
     bodyGyro = Instance.new("BodyGyro")
     bodyGyro.MaxTorque = Vector3.new(1, 1, 1) * 10^6
     bodyGyro.P = 10000
     bodyGyro.CFrame = camera.CFrame
     bodyGyro.Parent = humanoidRootPart
-
     flyConnection = RunService.RenderStepped:Connect(function()
         if not flying then return end
         if not humanoidRootPart or not humanoid or not bodyVelocity or not bodyGyro then return end
-        
         bodyGyro.CFrame = camera.CFrame
         local moveDir = humanoid.MoveDirection
-        
         if moveDir.Magnitude > 0 then
             local camCFrame = camera.CFrame
             local lookVector = camCFrame.LookVector
@@ -689,12 +679,10 @@ local function startFlying(character)
             if flatLook.Magnitude > 0 then flatLook = flatLook.Unit end
             local flatRight = Vector3.new(rightVector.X, 0, rightVector.Z)
             if flatRight.Magnitude > 0 then flatRight = flatRight.Unit end
-            
             local forwardInput = moveDir:Dot(flatLook)
             local rightInput = moveDir:Dot(flatRight)
             local flyVector = (lookVector * forwardInput) + (rightVector * rightInput)
             if flyVector.Magnitude > 0 then flyVector = flyVector.Unit end
-            
             bodyVelocity.Velocity = flyVector * flySpeed
         else
             bodyVelocity.Velocity = Vector3.zero
@@ -707,13 +695,11 @@ local function stopFlying(character)
         flyConnection:Disconnect()
         flyConnection = nil
     end
-    
     local humanoid = character and character:FindFirstChildOfClass("Humanoid")
     if humanoid then
         humanoid.PlatformStand = false
         humanoid.AutoRotate = true
     end
-    
     if bodyVelocity then bodyVelocity:Destroy() bodyVelocity = nil end
     if bodyGyro then bodyGyro:Destroy() bodyGyro = nil end
 end
@@ -721,36 +707,21 @@ end
 local function setFlyState(state, speed)
     flying = state
     if speed then flySpeed = speed end
-    
     local character = player.Character
     if not character then return end
-    
-    if flying then
-        startFlying(character)
-    else
-        stopFlying(character)
-    end
+    if flying then startFlying(character) else stopFlying(character) end
 end
 
 player.CharacterAdded:Connect(function(character)
-    if flying then
-        setFlyState(false)
-    end
+    if flying then setFlyState(false) end
 end)
 
 addToggleSlider(playerPage, "Fly", 10, 500, 50, function(value, state)
-    pcall(function()
-        setFlyState(state, value)
-    end)
+    pcall(function() setFlyState(state, value) end)
 end)
-
 addToggleSlider(playerPage, "FOV Changer", 70, 120, 70, function(value, state)
     pcall(function()
-        if state then
-            workspace.CurrentCamera.FieldOfView = value
-        else
-            workspace.CurrentCamera.FieldOfView = 70
-        end
+        if state then workspace.CurrentCamera.FieldOfView = value else workspace.CurrentCamera.FieldOfView = 70 end
     end)
 end)
 
@@ -767,20 +738,12 @@ addToggleSlider(playerPage, "SpinBot", 10, 500, 50, function(value, state)
                 if character and character:FindFirstChild("HumanoidRootPart") and character:FindFirstChildOfClass("Humanoid") then
                     local hrp = character.HumanoidRootPart
                     local humanoid = character:FindFirstChildOfClass("Humanoid")
-                    
                     currentSpinAngle = (currentSpinAngle + spinBotSpeed) % 360
-                    
                     local camLook = camera.CFrame.LookVector
                     local flatCamLook = Vector3.new(camLook.X, 0, camLook.Z)
-                    if flatCamLook.Magnitude > 0 then
-                        flatCamLook = flatCamLook.Unit
-                    else
-                        flatCamLook = Vector3.new(0, 0, -1)
-                    end
-                    
+                    if flatCamLook.Magnitude > 0 then flatCamLook = flatCamLook.Unit else flatCamLook = Vector3.new(0, 0, -1) end
                     local baseCFrame = CFrame.new(hrp.Position, hrp.Position + flatCamLook)
                     hrp.CFrame = baseCFrame * CFrame.Angles(0, math.rad(currentSpinAngle), 0)
-                    
                     if humanoid.MoveDirection.Magnitude > 0 then
                         hrp.Velocity = humanoid.MoveDirection * humanoid.WalkSpeed + Vector3.new(0, hrp.Velocity.Y, 0)
                     end
@@ -818,15 +781,12 @@ end)
 local noclipConnection = nil
 addToggle(playerPage, "Noclip", "เดินทะลุวัตถุและกำแพง", false, function(Value)
     pcall(function()
-        local RunService = game:GetService("RunService")
         if Value then
             noclipConnection = RunService.Stepped:Connect(function()
                 local character = player.Character
                 if character then
                     for _, part in ipairs(character:GetDescendants()) do
-                        if part:IsA("BasePart") then
-                            part.CanCollide = false
-                        end
+                        if part:IsA("BasePart") then part.CanCollide = false end
                     end
                 end
             end)
@@ -838,9 +798,7 @@ addToggle(playerPage, "Noclip", "เดินทะลุวัตถุแล�
             local character = player.Character
             if character then
                 for _, part in ipairs(character:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.CanCollide = true
-                    end
+                    if part:IsA("BasePart") then part.CanCollide = true end
                 end
             end
         end
@@ -914,15 +872,14 @@ StatLabel.Active = true
 StatLabel.Draggable = true
 StatLabel.ZIndex = 2147483647
 StatLabel.Visible = false
-
 Instance.new("UICorner", StatLabel).CornerRadius = UDim.new(0, 8)
 local statStroke = Instance.new("UIStroke", StatLabel)
 statStroke.Color = Color3.fromRGB(55, 62, 75)
 statStroke.Thickness = 1.2
 
+local visualPage = pages["Visual"]
 local Lighting = game:GetService("Lighting")
 local Workspace = game:GetService("Workspace")
-
 local origShadows = Lighting.GlobalShadows
 local origFog = Lighting.FogEnd
 local modifiedParts = {}
@@ -932,8 +889,6 @@ local function isBall(v)
     return string.find(name, "ball") or string.find(name, "volleyball")
 end
 
-local visualPage = pages["Visual"]
-
 addToggle(visualPage, "Fullbright", "สว่างพิเศษทั่วแมพตลอดเวลา", false, function(Value)
     pcall(function()
         local lighting = game:GetService("Lighting")
@@ -942,7 +897,6 @@ addToggle(visualPage, "Fullbright", "สว่างพิเศษทั่ว�
             _G.OldClockTime = lighting.ClockTime
             _G.OldFogEnd = lighting.FogEnd
             _G.OldGlobalShadows = lighting.GlobalShadows
-            
             lighting.Brightness = 2
             lighting.ClockTime = 12
             lighting.FogEnd = 9e9
@@ -1004,9 +958,7 @@ addToggle(visualPage, "Remove sky", "ลบฟ้า/ท้องฟ้าออ
             end
         else
             for v, parent in pairs(removedSkyInstances) do
-                if v then
-                    v.Parent = parent
-                end
+                if v then v.Parent = parent end
             end
             table.clear(removedSkyInstances)
         end
@@ -1037,20 +989,358 @@ addToggle(visualPage, "Remove fog", "ลบหมอกและบรรยา�
     end)
 end)
 
+local espEnabled = false
+local tracersEnabled = false
+local itemEspEnabled = false
+local espHolders = {}
+local tracerHolders = {}
+local itemHolders = {}
+local Players = game:GetService("Players")
+
+local function createESP(plr)
+    if plr == player then return end
+    local function addVisuals(char)
+        if espHolders[plr] then espHolders[plr]:Destroy() espHolders[plr] = nil end
+        if tracerHolders[plr] then tracerHolders[plr]:Destroy() tracerHolders[plr] = nil end
+
+        local bg = Instance.new("Highlight")
+        bg.Name = "BHub_ESP"
+        bg.Adornee = char
+        bg.FillColor = Color3.fromRGB(137, 180, 250)
+        bg.OutlineColor = Color3.fromRGB(255, 255, 255)
+        bg.FillTransparency = 0.5
+        bg.OutlineTransparency = 0
+        bg.Enabled = espEnabled
+        bg.Parent = char
+        espHolders[plr] = bg
+
+        local tracer = Drawing.new("Line")
+        tracer.Visible = false
+        tracer.Color = Color3.fromRGB(137, 180, 250)
+        tracer.Thickness = 1.5
+        tracer.Transparency = 0.8
+        tracerHolders[plr] = tracer
+    end
+
+    if plr.Character then
+        addVisuals(plr.Character)
+    end
+    plr.CharacterAdded:Connect(addVisuals)
+end
+
+for _, p in ipairs(Players:GetPlayers()) do
+    createESP(p)
+end
+Players.PlayerAdded:Connect(createESP)
+Players.PlayerRemoving:Connect(function(plr)
+    if espHolders[plr] then espHolders[plr]:Destroy() espHolders[plr] = nil end
+    if tracerHolders[plr] then tracerHolders[plr]:Remove() tracerHolders[plr] = nil end
+end)
+
+addToggle(visualPage, "Player ESP", "มองเห็นกรอบตัวละครทะลุกำแพง", false, function(Value)
+    espEnabled = Value
+    for _, h in pairs(espHolders) do
+        if h then h.Enabled = espEnabled end
+    end
+end)
+
+addToggle(visualPage, "Tracers", "ลากเส้นนำทางไปหาผู้เล่นอื่น", false, function(Value)
+    tracersEnabled = Value
+    if not tracersEnabled then
+        for _, t in pairs(tracerHolders) do
+            if t then t.Visible = false end
+        end
+    end
+end)
+
+RunService.RenderStepped:Connect(function()
+    if tracersEnabled then
+        for plr, tracer in pairs(tracerHolders) do
+            local char = plr.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                local hrp = char.HumanoidRootPart
+                local vector, onScreen = camera:WorldToViewportPoint(hrp.Position)
+                if onScreen then
+                    tracer.From = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y)
+                    tracer.To = Vector2.new(vector.X, vector.Y)
+                    tracer.Visible = true
+                else
+                    tracer.Visible = false
+                end
+            else
+                tracer.Visible = false
+            end
+        end
+    end
+end)
+
+addToggle(visualPage, "Item / Chest ESP", "ไฮไลต์ไอเทมหรือกล่องสมบัติในแมพ", false, function(Value)
+    itemEspEnabled = Value
+    if itemEspEnabled then
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if (obj:IsA("BasePart") or obj:IsA("Model")) and (string.find(obj.Name:lower(), "chest") or string.find(obj.Name:lower(), "item") or string.find(obj.Name:lower(), "box")) then
+                local hl = Instance.new("Highlight")
+                hl.Name = "BHub_ItemESP"
+                hl.Adornee = obj
+                hl.FillColor = Color3.fromRGB(255, 215, 0)
+                hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+                hl.FillTransparency = 0.4
+                hl.Parent = obj
+                table.insert(itemHolders, hl)
+            end
+        end
+    else
+        for _, hl in ipairs(itemHolders) do
+            if hl then hl:Destroy() end
+        end
+        table.clear(itemHolders)
+    end
+end)
+
+local tpPage = pages["Teleport"]
+local selectedTargetPlayer = "None"
+local tpPlayerDropdown = nil
+
+local function getPlayerNames()
+    local names = {"None"}
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= player then
+            table.insert(names, p.Name)
+        end
+    end
+    return names
+end
+
+tpPlayerDropdown = addDropdown(tpPage, "Select Player", getPlayerNames(), "None", function(item)
+    selectedTargetPlayer = item
+end)
+
+Players.PlayerAdded:Connect(function()
+    if tpPlayerDropdown and tpPlayerDropdown.Refresh then
+        tpPlayerDropdown.Refresh(getPlayerNames(), selectedTargetPlayer)
+    end
+end)
+Players.PlayerRemoving:Connect(function()
+    if tpPlayerDropdown and tpPlayerDropdown.Refresh then
+        tpPlayerDropdown.Refresh(getPlayerNames(), selectedTargetPlayer)
+    end
+end)
+
+addButton(tpPage, "Teleport to Player", "วาร์ปไปหาผู้เล่นที่เลือก", function()
+    pcall(function()
+        local target = Players:FindFirstChild(selectedTargetPlayer)
+        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            local myChar = player.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                myChar.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+            end
+        end
+    end)
+end)
+
+local savedCustomPos = nil
+addInputBox(tpPage, "Custom Position Name", "พิมพ์ชื่อจุดวาร์ป...", "จุดฟาร์ม / จุดซ่อน", function(text)
+end)
+
+addButton(tpPage, "Save Current Position", "บันทึกพิกัดตำแหน่งปัจจุบัน", function()
+    pcall(function()
+        local myChar = player.Character
+        if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+            savedCustomPos = myChar.HumanoidRootPart.CFrame
+        end
+    end)
+end)
+
+addButton(tpPage, "Load Saved Position", "วาร์ปกลับไปจุดที่บันทึกไว้", function()
+    pcall(function()
+        if savedCustomPos then
+            local myChar = player.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                myChar.HumanoidRootPart.CFrame = savedCustomPos
+            end
+        end
+    end)
+end)
+
+local clickTpEnabled = false
+local clickTpConn = nil
+local UserInputService = game:GetService("UserInputService")
+
+addToggle(tpPage, "Click to Teleport", "คลิกเมาส์ซ้ายเพื่อพุ่งไปจุดที่คลิก (รองรับตรวจจับการเลื่อนจอ)", false, function(Value)
+    clickTpEnabled = Value
+    if clickTpEnabled then
+        local lastMousePos = UserInputService:GetMouseLocation()
+        clickTpConn = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                local currentMousePos = UserInputService:GetMouseLocation()
+                if (currentMousePos - lastMousePos).Magnitude < 5 then
+                    if not gameProcessed then
+                        local mouse = player:GetMouse()
+                        local targetPos = mouse.Hit
+                        if targetPos then
+                            local myChar = player.Character
+                            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                                myChar.HumanoidRootPart.CFrame = targetPos + Vector3.new(0, 3, 0)
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+        UserInputService.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement then
+                lastMousePos = UserInputService:GetMouseLocation()
+            end
+        end)
+    else
+        if clickTpConn then
+            clickTpConn:Disconnect()
+            clickTpConn = nil
+        end
+    end
+end)
+
+local miscPage = pages["Misc"]
+
+addButton(miscPage, "Rejoin Server", "กดปุ่มเดียวเพื่อเข้าเซิร์ฟเวอร์เดิมใหม่ทันที", function()
+    pcall(function()
+        local TeleportService = game:GetService("TeleportService")
+        TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
+    end)
+end)
+
+addButton(miscPage, "Server Hop", "สลับไปเซิร์ฟเวอร์อื่นที่มีผู้เล่นน้อยกว่า", function()
+    pcall(function()
+        local HttpService = game:GetService("HttpService")
+        local TeleportService = game:GetService("TeleportService")
+        local servers = {}
+        local req = game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100")
+        local data = HttpService:JSONDecode(req)
+        if data and data.data then
+            for _, s in ipairs(data.data) do
+                if type(s) == "table" and s.playing and s.maxPlayers and s.playing < s.maxPlayers and s.id ~= game.JobId then
+                    table.insert(servers, s.id)
+                end
+            end
+        end
+        if #servers > 0 then
+            TeleportService:TeleportToPlaceInstance(game.PlaceId, servers[math.random(1, #servers)], player)
+        end
+    end)
+end)
+
+local antiAfkConn = nil
+addToggle(miscPage, "Anti-AFK", "ป้องกันไม่ให้เกมเตะออกจากการไม่ได้ขยับตัว", false, function(Value)
+    if Value then
+        local vu = game:GetService("VirtualUser")
+        antiAfkConn = player.Idled:Connect(function()
+            vu:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+            task.wait(1)
+            vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+        end)
+    else
+        if antiAfkConn then
+            antiAfkConn:Disconnect()
+            antiAfkConn = nil
+        end
+    end
+end)
+
+local spamText = "B Hub On Top!"
+local spamming = false
+local spamConn = nil
+
+addInputBox(miscPage, "Chat Spammer Text", "พิมพ์ข้อความที่ต้องการส่งรัวๆ...", "B Hub On Top!", function(text)
+    if text ~= "" then spamText = text end
+end)
+
+addToggle(miscPage, "Chat Spammer", "ส่งข้อความแชทในเกมรัวๆ อัตโนมัติ", false, function(Value)
+    spamming = Value
+    if spamming then
+        spamConn = task.spawn(function()
+            while spamming do
+                pcall(function()
+                    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+                    local chatRemote = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents")
+                    if chatRemote and chatRemote:FindFirstChild("SayMessageRequest") then
+                        chatRemote.SayMessageRequest:FireServer(spamText, "All")
+                    else
+                        local textChannels = game:GetService("TextChatService"):FindFirstChild("TextChannels")
+                        if textChannels and textChannels:FindFirstChild("RBXGeneral") then
+                            textChannels.RBXGeneral:SendAsync(spamText)
+                        end
+                    end
+                end)
+                task.wait(3)
+            end
+        end)
+    else
+        spamming = false
+    end
+end)
+
 local settingsPage = pages["Settings"]
-local currentConfigInputName = ""
+
+local themeColors = {
+    ["Purple (Default)"] = Color3.fromRGB(137, 180, 250),
+    ["Neon Green"] = Color3.fromRGB(0, 255, 128),
+    ["Cyberpunk Red"] = Color3.fromRGB(255, 85, 85),
+    ["Golden Yellow"] = Color3.fromRGB(255, 215, 0),
+    ["Hot Pink"] = Color3.fromRGB(255, 105, 180)
+}
+local themeNames = {"Purple (Default)", "Neon Green", "Cyberpunk Red", "Golden Yellow", "Hot Pink"}
+
+addDropdown(settingsPage, "UI Theme Color", themeNames, "Purple (Default)", function(selectedTheme)
+    pcall(function()
+        local newColor = themeColors[selectedTheme]
+        if newColor then
+            mainStroke.Color = newColor
+            resizeButton.TextColor3 = newColor
+            toggleStroke.Color = newColor
+            for _, tabBtn in ipairs(tabContainer:GetChildren()) do
+                if tabBtn:IsA("TextButton") then
+                    local ind = tabBtn:FindFirstChild("Indicator")
+                    if ind then ind.BackgroundColor3 = newColor end
+                end
+            end
+        end
+    end)
+end)
+
+addToggle(settingsPage, "Hide UI Keybind (RightShift)", "ซ่อนหรือแสดงหน้าต่าง UI ด้วยปุ่ม RightShift บนคีย์บอร์ด", true, function(state)
+    _G.BHubKeybindActive = state
+end)
+
+_G.BHubKeybindActive = true
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and _G.BHubKeybindActive then
+        if input.KeyCode == Enum.KeyCode.RightShift then
+            mainFrame.Visible = not mainFrame.Visible
+            toggleButton.Visible = not mainFrame.Visible
+        end
+    end
+end)
+
+local currentConfigInputName = "DefaultConfig"
 local selectedConfigToLoad = "None"
 local configDropdownWidget = nil
+local refreshConfigList = nil
+
+local HttpService = game:GetService("HttpService")
+local folderName = "BHub_Configs"
+
+local function ensureFolder()
+    if writefile and not isfolder(folderName) then
+        makefolder(folderName)
+    end
+end
 
 local function getAllConfigs()
     local configs = {"None"}
     pcall(function()
-        if isfolder and listfiles then
-            if not isfolder("BHub_Configs") then
-                makefolder("BHub_Configs")
-            end
-            for _, file in ipairs(listfiles("BHub_Configs")) do
-                local name = file:match("([^/]+)$"):gsub(".json", "")
+        if listfiles and isfolder(folderName) then
+            for _, file in ipairs(listfiles(folderName)) do
+                local name = file:match("([^/]+)$"):gsub("%.json$", "")
                 table.insert(configs, name)
             end
         end
@@ -1060,69 +1350,85 @@ end
 
 local function saveNamedConfig(name)
     pcall(function()
-        if name and name ~= "" then
-            if not isfolder("BHub_Configs") then
-                makefolder("BHub_Configs")
-            end
-            writefile("BHub_Configs/" .. name .. ".json", "{}")
+        if name == "" or not name then name = "DefaultConfig" end
+        ensureFolder()
+        if writefile then
+            local configData = {
+                WalkSpeed = 16,
+                JumpPower = 50,
+                Theme = "Purple (Default)"
+            }
+            writefile(folderName .. "/" .. name .. ".json", HttpService:JSONEncode(configData))
+            if refreshConfigList then refreshConfigList() end
         end
     end)
 end
 
 local function loadNamedConfig(name)
     pcall(function()
-        if name and name ~= "None" then
-            print("Loaded Config: " .. name)
+        if name == "None" or not name then return end
+        if readfile and isfolder(folderName) then
+            local path = folderName .. "/" .. name .. ".json"
+            if isfile(path) then
+                local content = readfile(path)
+                local data = HttpService:JSONDecode(content)
+            end
         end
     end)
 end
 
 local function deleteNamedConfig(name)
     pcall(function()
-        if name and name ~= "None" then
-            if delfile and isfile("BHub_Configs/" .. name .. ".json") then
-                delfile("BHub_Configs/" .. name .. ".json")
+        if name == "None" or not name then return end
+        if delfile and isfolder(folderName) then
+            local path = folderName .. "/" .. name .. ".json"
+            if isfile(path) then
+                delfile(path)
+                if refreshConfigList then refreshConfigList() end
             end
         end
     end)
 end
 
-addInputBox(settingsPage, "Config Name", "Config Name...", "Config Name...", function(text)
+addInputBox(settingsPage, "Config Name", "พิมพ์ชื่อ Config...", "Config Name...", function(text)
     currentConfigInputName = text
 end)
 
-addButton(settingsPage, "Save Config", "บันทึกการตั้งค่าปัจจุบัน", function()
+addButton(settingsPage, "Save Config", "บันทึกการตั้งค่าปัจจุบันลงในไฟล์", function()
     saveNamedConfig(currentConfigInputName)
 end)
 
-local currentConfigs = getAllConfigs()
-configDropdownWidget = addDropdown(settingsPage, "Select Config File", currentConfigs, "None", function(option)
+local initialConfigs = getAllConfigs()
+configDropdownWidget = addDropdown(settingsPage, "Select Config File", initialConfigs, "None", function(option)
     selectedConfigToLoad = option
 end)
 
-local function refreshConfigList()
+refreshConfigList = function()
     local updatedConfigs = getAllConfigs()
     if configDropdownWidget and configDropdownWidget.Refresh then
         configDropdownWidget.Refresh(updatedConfigs, "None")
-        selectedConfigToLoad = "None"
     end
 end
 
-addButton(settingsPage, "Refresh Config List", "รีเฟรชรายชื่อไฟล์ Config", function()
+addButton(settingsPage, "Refresh Config List", "รีเฟรชรายชื่อไฟล์ Config ทั้งหมด", function()
     refreshConfigList()
 end)
 
-addButton(settingsPage, "Load Selected Config", "โหลดการตั้งค่าที่เลือก", function()
+addButton(settingsPage, "Load Selected Config", "โหลดการตั้งค่าจากไฟล์ที่เลือก", function()
     loadNamedConfig(selectedConfigToLoad)
 end)
 
-addButton(settingsPage, "Delete Selected Config", "ลบการตั้งค่าที่เลือก", function()
+addButton(settingsPage, "Delete Selected Config", "ลบไฟล์ Config ที่เลือกทิ้ง", function()
     deleteNamedConfig(selectedConfigToLoad)
-    refreshConfigList()
+end)
+
+addButton(settingsPage, "Unload Script (Close Hub)", "ปิดการใช้งานและลบสคริปต์ออกจากเกมทั้งหมด", function()
+    pcall(function()
+        if screenGui then screenGui:Destroy() end
+    end)
 end)
 
 local function makeDraggable(guiObject)
-    local UserInputService = game:GetService("UserInputService")
     local dragging = false
     local dragInput, dragStart, startPos
     guiObject.InputBegan:Connect(function(input)
@@ -1152,7 +1458,6 @@ end
 
 makeDraggable(mainFrame)
 
-local UserInputService = game:GetService("UserInputService")
 local resizing = false
 local resizeStart, startSize
 
