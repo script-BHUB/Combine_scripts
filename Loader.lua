@@ -1,443 +1,550 @@
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-local Players = game:GetService("Players")
-local Lighting = game:GetService("Lighting")
-local RunService = game:GetService("RunService")
-local Workspace = game:GetService("Workspace")
-
-local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
-if playerGui:FindFirstChild("BHubSupremeUI") then
-    playerGui.BHubSupremeUI:Destroy()
+local coreGui = game:GetService("CoreGui")
+local player = game.Players.LocalPlayer
+local targetParent = coreGui
+if pcall(function() return coreGui:GetChildren() end) then
+    targetParent = coreGui
+else
+    targetParent = player:WaitForChild("PlayerGui")
 end
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "BHubSupremeUI"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.IgnoreGuiInset = true
-ScreenGui.DisplayOrder = 999999999
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-pcall(function()
-    ScreenGui.Parent = game:GetService("CoreGui")
-end)
-
-if not ScreenGui.Parent then
-    ScreenGui.Parent = playerGui
+if targetParent:FindFirstChild("BH_UI") then
+    targetParent.BH_UI:Destroy()
 end
 
-local Window = Fluent:CreateWindow({
-    Title = "B Hub - Fluent",
-    SubTitle = "UI",
-    TabWidth = 160,
-    Size = UDim2.fromOffset(560, 315),
-    Acrylic = true,
-    Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl
-})
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BH_UI"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.DisplayOrder = 2147483647
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+screenGui.Parent = targetParent
 
-local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "" }),
-    BoostFps = Window:AddTab({ Title = "Boost fps", Icon = "" })
-}
+local defaultMainPos = UDim2.new(0.5, -250, 0.5, -175)
+local defaultMainSize = UDim2.new(0, 500, 0, 350)
+local defaultTogglePos = UDim2.new(0, 20, 0, 100)
 
-Tabs.Main:AddButton({
-    Title = "Executor",
-    Description = "Executor Script",
-    Callback = function()
-        pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/script-BHUB/Executor/refs/heads/main/Executor.lua"))()
-        end)
-    end
-})
+local toggleButton = Instance.new("TextButton")
+toggleButton.Name = "BH"
+toggleButton.Size = UDim2.new(0, 80, 0, 40)
+toggleButton.Position = defaultTogglePos
+toggleButton.BackgroundColor3 = Color3.fromRGB(24, 24, 37)
+toggleButton.TextColor3 = Color3.fromRGB(205, 214, 244)
+toggleButton.TextSize = 16
+toggleButton.Font = Enum.Font.GothamBold
+toggleButton.Text = "B Hub"
+toggleButton.ZIndex = 2147483647
+toggleButton.Parent = screenGui
 
-Tabs.Main:AddButton({
-    Title = "Aimbot hub",
-    Description = "Aimbot มีฟังชั่นหลากหลาย",
-    Callback = function()
-        pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/script-BHUB/Aimbot-hub/refs/heads/main/Aimbot-hub"))()
-        end)
-    end
-})
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0, 8)
+buttonCorner.Parent = toggleButton
 
-Tabs.Main:AddButton({
-    Title = "Script blade ball",
-    Description = "417 Auto perry",
-    Callback = function()
-        pcall(function()
-            loadstring(game:HttpGet("https://api.jnkie.com/api/v1/luascripts/public/f72223000bf529bfa6b14e7750439a420e465d25399341decd59e10c3d56f217/download"))()
-        end)
-    end
-})
+local toggleStroke = Instance.new("UIStroke")
+toggleStroke.Color = Color3.fromRGB(0, 255, 255)
+toggleStroke.Thickness = 1
+toggleStroke.Transparency = 0.7
+toggleStroke.Parent = toggleButton
 
-Tabs.Main:AddButton({
-    Title = "Script blox fruit",
-    Description = "Banana Cat hub free",
-    Callback = function()
-        pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/aloaloalo322/sssdas/refs/heads/main/cc"))()
-        end)
-    end
-})
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = defaultMainSize
+mainFrame.Position = defaultMainPos
+mainFrame.BackgroundColor3 = Color3.fromRGB(17, 17, 27)
+mainFrame.BorderSizePixel = 0
+mainFrame.Visible = true
+mainFrame.ZIndex = 2147483646
+mainFrame.Parent = screenGui
 
-Tabs.Main:AddButton({
-    Title = "JN HH Gaming",
-    Description = "Rivals Wall bang",
-    Callback = function()
-        pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/JNHHGaming/Rivals5/refs/heads/main/JN%20HH%20Gaming", true))()
-        end)
-    end
-})
+local mainStroke = Instance.new("UIStroke")
+mainStroke.Color = Color3.fromRGB(137, 180, 250)
+mainStroke.Thickness = 1.5
+mainStroke.Parent = mainFrame
 
-Tabs.Main:AddButton({
-    Title = "Jujutsu Shenanigans",
-    Description = "Silt hub Key system in Discord",
-    Callback = function()
-        pcall(function()
-            loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/72bf00835f242f72e7942ed051574eac.lua"))()
-        end)
-    end
-})
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 16)
+frameCorner.Parent = mainFrame
 
-Tabs.Main:AddButton({
-    Title = "Script Grow a Garden 2",
-    Description = "SP Hub",
-    Callback = function()
-        pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/as6cd0/SP_Hub/refs/heads/main/Loader"))()
-        end)
-    end
-})
+local resizeButton = Instance.new("TextButton")
+resizeButton.Name = "ResizeButton"
+resizeButton.Size = UDim2.new(0, 25, 0, 25)
+resizeButton.Position = UDim2.new(1, -25, 1, -25)
+resizeButton.BackgroundTransparency = 1
+resizeButton.Text = "◢"
+resizeButton.TextColor3 = Color3.fromRGB(137, 180, 250)
+resizeButton.TextSize = 12
+resizeButton.Font = Enum.Font.GothamBold
+resizeButton.ZIndex = 2147483647
+resizeButton.Parent = mainFrame
 
-Tabs.Main:AddButton({
-    Title = "Pet Simulator 99",
-    Description = "PS99 Script",
-    Callback = function()
-        pcall(function()
-            loadstring(game:HttpGet("https://vss.pandauth.com/virtual/file/a429e26ef87e49ba"))()
-        end)
-    end
-})
+local tabContainer = Instance.new("ScrollingFrame")
+tabContainer.Name = "TabContainer"
+tabContainer.Size = UDim2.new(0, 120, 1, -20)
+tabContainer.Position = UDim2.new(0, 10, 0, 10)
+tabContainer.BackgroundTransparency = 1
+tabContainer.CanvasSize = UDim2.new(0, 0, 0, 260)
+tabContainer.ScrollBarThickness = 4
+tabContainer.ZIndex = 2147483647
+tabContainer.Parent = mainFrame
 
-Tabs.Main:AddButton({
-    Title = "Galactic hub Keyless",
-    Description = "Keyboard Escape (+1 Speed)",
-    Callback = function()
-        pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/GalacticScripts/Galactic-Hub/refs/heads/main/WindUI"))()
-        end)
-    end
-})
+local uiListLayout = Instance.new("UIListLayout")
+uiListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+uiListLayout.Padding = UDim.new(0, 8)
+uiListLayout.Parent = tabContainer
 
-Tabs.Main:AddButton({
-    Title = "Tora lsme Hub",
-    Description = "Support game 600+",
-    Callback = function()
-        pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/boplsme/Scripts-/refs/heads/main/%5BBETA%5D%20Tora%20Isme%20Hub.txt"))()
-        end)
-    end
-})
+local contentArea = Instance.new("Frame")
+contentArea.Name = "ContentArea"
+contentArea.Size = UDim2.new(1, -150, 1, -20)
+contentArea.Position = UDim2.new(0, 140, 0, 10)
+contentArea.BackgroundColor3 = Color3.fromRGB(30, 30, 46)
+contentArea.BorderSizePixel = 0
+contentArea.ZIndex = 2147483647
+contentArea.Parent = mainFrame
 
-Tabs.Main:AddButton({
-    Title = "Script Volleyball legends",
-    Description = "Key system in Discord",
-    Callback = function()
-        pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/FeRk1eOp/fer4ixzlol.hub/refs/heads/main/fer4ixzhub", true))()
-        end)
-    end
-})
+local contentCorner = Instance.new("UICorner")
+contentCorner.CornerRadius = UDim.new(0, 10)
+contentCorner.Parent = contentArea
 
-Tabs.Main:AddButton({
-    Title = "Murder Mystery 2",
-    Description = "MM2 script Keyless",
-    Callback = function()
-        pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/xv3gasx/Murder-Mystery-2/refs/heads/main/Release.lua"))()
-        end)
-    end
-})
+local tabs = {"Main", "Player", "Visual", "Teleport", "Misc", "Settings"}
+local pages = {}
 
-local StatLabel = Instance.new("TextLabel")
-StatLabel.Name = "StatLabel"
-StatLabel.Parent = ScreenGui
-StatLabel.BackgroundTransparency = 0.2
-StatLabel.BackgroundColor3 = Color3.fromRGB(18, 20, 24)
-StatLabel.AnchorPoint = Vector2.new(0.5, 0)
-StatLabel.Position = UDim2.new(0.5, 0, 0, 15)
-StatLabel.Size = UDim2.new(0, 200, 0, 28)
-StatLabel.Font = Enum.Font.GothamBold
-StatLabel.TextColor3 = Color3.fromRGB(215, 220, 230)
-StatLabel.TextSize = 11
-StatLabel.Text = "FPS: -- | PING: --ms"
-StatLabel.Active = true
-StatLabel.Draggable = true
-StatLabel.ZIndex = 10
-StatLabel.Visible = false
+for i, tabName in ipairs(tabs) do
+    local tabButton = Instance.new("TextButton")
+    tabButton.Name = tabName
+    tabButton.Size = UDim2.new(1, 0, 0, 35)
+    tabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 46)
+    tabButton.TextColor3 = Color3.fromRGB(205, 214, 244)
+    tabButton.TextSize = 14
+    tabButton.Font = Enum.Font.GothamBold
+    tabButton.Text = tabName
+    tabButton.LayoutOrder = i
+    tabButton.ZIndex = 2147483647
+    tabButton.Parent = tabContainer
 
-Instance.new("UICorner", StatLabel).CornerRadius = UDim.new(0, 8)
-local statStroke = Instance.new("UIStroke", StatLabel)
-statStroke.Color = Color3.fromRGB(55, 62, 75)
-statStroke.Thickness = 1.2
+    local tabCorner = Instance.new("UICorner")
+    tabCorner.CornerRadius = UDim.new(0, 8)
+    tabCorner.Parent = tabButton
 
-local origShadows = Lighting.GlobalShadows
-local origFog = Lighting.FogEnd
-local modifiedParts = {}
-local ultraOrigEffects = {}
-local ultraOrigParts = {}
-local ultraOrigMaterials = {}
-local ultraConnection = nil
+    local indicator = Instance.new("Frame")
+    indicator.Name = "Indicator"
+    indicator.Size = UDim2.new(1, -10, 0, 3)
+    indicator.Position = UDim2.new(0, 5, 1, -4)
+    indicator.BackgroundColor3 = Color3.fromRGB(137, 180, 250)
+    indicator.BorderSizePixel = 0
+    indicator.Visible = false
+    indicator.ZIndex = 2147483647
+    indicator.Parent = tabButton
 
-local terrain = Workspace:FindFirstChildOfClass("Terrain")
-local origTerrain = {
-    Size = terrain and terrain.WaterWaveSize,
-    Speed = terrain and terrain.WaterWaveSpeed,
-    Reflectance = terrain and terrain.WaterReflectance,
-    Transparency = terrain and terrain.WaterTransparency
-}
+    local indicatorCorner = Instance.new("UICorner")
+    indicatorCorner.CornerRadius = UDim.new(1, 0)
+    indicatorCorner.Parent = indicator
 
-local function isBall(v)
-    local name = v.Name:lower()
-    return string.find(name, "ball") or string.find(name, "volleyball")
-end
+    local page = Instance.new("ScrollingFrame")
+    page.Name = tabName .. "Page"
+    page.Size = UDim2.new(1, -20, 1, -20)
+    page.Position = UDim2.new(0, 10, 0, 10)
+    page.BackgroundTransparency = 1
+    page.Visible = false
+    page.CanvasSize = UDim2.new(0, 0, 0, 0)
+    page.ScrollBarThickness = 4
+    page.ZIndex = 2147483647
+    page.Parent = contentArea
 
-Tabs.BoostFps:AddToggle("BoostFpsToggle", {
-    Title = "Boost fps",
-    Description = "Smooth graphics & optimize game",
-    Default = false,
-    Callback = function(Value)
-        pcall(function()
-            if Value then
-                origShadows = Lighting.GlobalShadows
-                origFog = Lighting.FogEnd
-                Lighting.GlobalShadows = false
-                Lighting.FogEnd = 9e9
-                settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+    local pageLayout = Instance.new("UIListLayout")
+    pageLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    pageLayout.Padding = UDim.new(0, 8)
+    pageLayout.Parent = page
+    
+    local pagePadding = Instance.new("UIPadding")
+    pagePadding.PaddingTop = UDim.new(0, 5)
+    pagePadding.PaddingBottom = UDim.new(0, 5)
+    pagePadding.PaddingLeft = UDim.new(0, 5)
+    pagePadding.PaddingRight = UDim.new(0, 5)
+    pagePadding.Parent = page
 
-                task.spawn(function()
-                    for _, v in ipairs(Workspace:GetDescendants()) do
-                        if v:IsA("BasePart") and not isBall(v) then
-                            modifiedParts[v] = v.Material
-                            v.Material = Enum.Material.SmoothPlastic
-                            v.CastShadow = false
-                        end
-                    end
-                end)
-            else
-                Lighting.GlobalShadows = origShadows
-                Lighting.FogEnd = origFog
-                settings().Rendering.QualityLevel = Enum.QualityLevel.Automatic
+    pages[tabName] = page
 
-                for v, mat in pairs(modifiedParts) do
-                    if v and v.Parent then
-                        v.Material = mat
-                        v.CastShadow = true
-                    end
+    tabButton.MouseButton1Click:Connect(function()
+        for _, p in pairs(pages) do
+            p.Visible = false
+        end
+        page.Visible = true
+        for _, child in ipairs(tabContainer:GetChildren()) do
+            if child:IsA("TextButton") then
+                local ind = child:FindFirstChild("Indicator")
+                if ind then
+                    ind.Visible = false
                 end
-                table.clear(modifiedParts)
-            end
-        end)
-    end
-})
-
-Tabs.BoostFps:AddToggle("UltraBoostToggle", {
-    Title = "Ultra boost fps",
-    Description = "⚠️ โทรศัพท์มือถือสเปคต่ำไม่แนะนำให้ใช้ + วนลูปทุกๆวินาที",
-    Default = false,
-    Callback = function(Value)
-        pcall(function()
-            if Value then
-                for _, v in ipairs(Lighting:GetChildren()) do
-                    if v:IsA("PostEffect") or v:IsA("BloomEffect") or v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("DepthOfFieldEffect") or v:IsA("Atmosphere") or v:IsA("Clouds") then
-                        ultraOrigEffects[v] = v.Enabled
-                        v.Enabled = false
-                    end
-                end
-
-                task.spawn(function()
-                    for _, v in ipairs(Workspace:GetDescendants()) do
-                        pcall(function()
-                            if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Beam") or v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") or v:IsA("Highlight") then
-                                if ultraOrigParts[v] == nil then
-                                    ultraOrigParts[v] = v.Enabled
-                                end
-                                v.Enabled = false
-                            elseif v:IsA("Decal") or v:IsA("Texture") then
-                                if ultraOrigParts[v] == nil then
-                                    ultraOrigParts[v] = v.Transparency
-                                end
-                                v.Transparency = 1
-                            elseif v:IsA("Shirt") or v:IsA("Pants") or v:IsA("Clothing") or v:IsA("ShirtGraphic") then
-                                if ultraOrigParts[v] == nil then
-                                    ultraOrigParts[v] = v.Parent
-                                end
-                                v.Parent = nil
-                            elseif v:IsA("BasePart") and not isBall(v) then
-                                if ultraOrigMaterials[v] == nil then
-                                    ultraOrigMaterials[v] = v.Material
-                                end
-                                v.Material = Enum.Material.SmoothPlastic
-                                v.CastShadow = false
-                                v.Reflectance = 0
-                            end
-                        end)
-                    end
-                end)
-
-                if not ultraConnection then
-                    ultraConnection = Workspace.DescendantAdded:Connect(function(v)
-                        pcall(function()
-                            task.wait(0.05)
-                            if v:IsA("BasePart") and not isBall(v) then
-                                if ultraOrigMaterials[v] == nil then
-                                    ultraOrigMaterials[v] = v.Material
-                                end
-                                v.Material = Enum.Material.SmoothPlastic
-                                v.CastShadow = false
-                                v.Reflectance = 0
-                            elseif v:IsA("Shirt") or v:IsA("Pants") or v:IsA("Clothing") or v:IsA("ShirtGraphic") then
-                                if ultraOrigParts[v] == nil then
-                                    ultraOrigParts[v] = v.Parent
-                                end
-                                v.Parent = nil
-                            elseif v:IsA("Decal") or v:IsA("Texture") then
-                                if ultraOrigParts[v] == nil then
-                                    ultraOrigParts[v] = v.Transparency
-                                end
-                                v.Transparency = 1
-                            end
-                        end)
-                    end)
-                end
-
-                if terrain then
-                    terrain.WaterWaveSize = 0
-                    terrain.WaterWaveSpeed = 0
-                    terrain.WaterReflectance = 0
-                    terrain.WaterTransparency = 0
-                end
-
-                Fluent:Notify({
-                    Title = "Ultra Boost Active",
-                    Content = "เปิดโหมด Ultra boost fps สำเร็จ!",
-                    Duration = 3
-                })
-            else
-                if ultraConnection then
-                    ultraConnection:Disconnect()
-                    ultraConnection = nil
-                end
-
-                for v, state in pairs(ultraOrigEffects) do
-                    if v and v.Parent then
-                        v.Enabled = state
-                    end
-                end
-
-                for v, state in pairs(ultraOrigParts) do
-                    if v then
-                        if v:IsA("Decal") or v:IsA("Texture") then
-                            if v.Parent then
-                                v.Transparency = state
-                            end
-                        elseif v:IsA("Shirt") or v:IsA("Pants") or v:IsA("Clothing") or v:IsA("ShirtGraphic") then
-                            if state and state.Parent then
-                                v.Parent = state
-                            end
-                        else
-                            if v.Parent then
-                                v.Enabled = state
-                            end
-                        end
-                    end
-                end
-
-                for v, mat in pairs(ultraOrigMaterials) do
-                    if v and v.Parent then
-                        v.Material = mat
-                        v.CastShadow = true
-                        v.Reflectance = 0
-                    end
-                end
-
-                table.clear(ultraOrigEffects)
-                table.clear(ultraOrigParts)
-                table.clear(ultraOrigMaterials)
-
-                if terrain and origTerrain.Size then
-                    terrain.WaterWaveSize = origTerrain.Size
-                    terrain.WaterWaveSpeed = origTerrain.Speed
-                    terrain.WaterReflectance = origTerrain.Reflectance
-                    terrain.WaterTransparency = origTerrain.Transparency
-                end
-
-                Fluent:Notify({
-                    Title = "Ultra Boost Disabled",
-                    Content = "คืนค่าแมพและพื้นผิวเดิมเรียบร้อย!",
-                    Duration = 3
-                })
-            end
-        end)
-    end
-})
-
-Tabs.BoostFps:AddToggle("ShowFpsPingToggle", {
-    Title = "Show FPS & Ping",
-    Description = "Display draggable FPS and Ping counter",
-    Default = false,
-    Callback = function(Value)
-        StatLabel.Visible = Value
-    end
-})
-
-local ToggleButton = Instance.new("TextButton")
-ToggleButton.Parent = ScreenGui
-ToggleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-ToggleButton.Position = UDim2.new(0.02, 0, 0.16, 0)
-ToggleButton.Size = UDim2.new(0, 65, 0, 45)
-ToggleButton.Font = Enum.Font.GothamBold
-ToggleButton.Text = "B Hub"
-ToggleButton.TextColor3 = Color3.fromRGB(0, 255, 255)
-ToggleButton.TextSize = 14
-ToggleButton.Active = true
-ToggleButton.Draggable = true
-
-Instance.new("UICorner", ToggleButton).CornerRadius = UDim.new(0, 10)
-local ToggleGlow = Instance.new("UIStroke", ToggleButton)
-ToggleGlow.Color = Color3.fromRGB(0, 255, 255)
-ToggleGlow.Thickness = 1
-ToggleGlow.Transparency = 0.7
-
-local isVisible = true
-ToggleButton.MouseButton1Click:Connect(function()
-    isVisible = not isVisible
-    Window:Minimize()
-end)
-
-task.spawn(function()
-    local lastTime, frameCount = os.clock(), 0
-    RunService.Heartbeat:Connect(function(dt)
-        frameCount = frameCount + 1
-        local cT = os.clock()
-        if cT - lastTime >= 1.0 then
-            local fps = math.floor(frameCount / (cT - lastTime))
-            frameCount, lastTime = 0, cT
-            local ping = 0
-            pcall(function()
-                ping = math.floor(player:GetNetworkPing() * 1000)
-            end)
-            if StatLabel.Visible then
-                StatLabel.Text = string.format("FPS: %d | PING: %dms", fps, ping)
             end
         end
+        indicator.Visible = true
     end)
-end)
+end
 
-Fluent:Notify({
-    Title = "B Hub Loaded",
-    Content = "B Hub Ultra Boost Ready!",
-    Duration = 5
-})
+pages["Main"].Visible = true
+tabContainer:FindFirstChild("Main").Indicator.Visible = true
+
+local function addButton(parentPage, title, description, callback)
+    local buttonFrame = Instance.new("TextButton")
+    buttonFrame.Size = UDim2.new(1, 0, 0, 45)
+    buttonFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+    buttonFrame.Text = ""
+    buttonFrame.AutoButtonColor = true
+    buttonFrame.ZIndex = 2147483647
+    buttonFrame.Parent = parentPage
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = buttonFrame
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, -15, 0, 20)
+    titleLabel.Position = UDim2.new(0, 10, 0, 4)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.Text = title
+    titleLabel.TextColor3 = Color3.fromRGB(205, 214, 244)
+    titleLabel.TextSize = 13
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.ZIndex = 2147483647
+    titleLabel.Parent = buttonFrame
+
+    local descLabel = Instance.new("TextLabel")
+    descLabel.Size = UDim2.new(1, -15, 0, 15)
+    descLabel.Position = UDim2.new(0, 10, 0, 24)
+    descLabel.BackgroundTransparency = 1
+    descLabel.Font = Enum.Font.Gotham
+    descLabel.Text = description
+    descLabel.TextColor3 = Color3.fromRGB(160, 170, 200)
+    descLabel.TextSize = 11
+    descLabel.TextXAlignment = Enum.TextXAlignment.Left
+    descLabel.ZIndex = 2147483647
+    descLabel.Parent = buttonFrame
+
+    buttonFrame.MouseButton1Click:Connect(callback)
+    parentPage.CanvasSize = UDim2.new(0, 0, 0, parentPage.UIListLayout.AbsoluteContentSize.Y + 20)
+end
+
+local function addToggle(parentPage, title, description, defaultState, callback)
+    local toggleFrame = Instance.new("TextButton")
+    toggleFrame.Size = UDim2.new(1, 0, 0, 45)
+    toggleFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+    toggleFrame.Text = ""
+    toggleFrame.AutoButtonColor = false
+    toggleFrame.ZIndex = 2147483647
+    toggleFrame.Parent = parentPage
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = toggleFrame
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, -60, 0, 20)
+    titleLabel.Position = UDim2.new(0, 10, 0, 4)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.Text = title
+    titleLabel.TextColor3 = Color3.fromRGB(205, 214, 244)
+    titleLabel.TextSize = 13
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.ZIndex = 2147483647
+    titleLabel.Parent = toggleFrame
+
+    local descLabel = Instance.new("TextLabel")
+    descLabel.Size = UDim2.new(1, -60, 0, 15)
+    descLabel.Position = UDim2.new(0, 10, 0, 24)
+    descLabel.BackgroundTransparency = 1
+    descLabel.Font = Enum.Font.Gotham
+    descLabel.Text = description
+    descLabel.TextColor3 = Color3.fromRGB(160, 170, 200)
+    descLabel.TextSize = 11
+    descLabel.TextXAlignment = Enum.TextXAlignment.Left
+    descLabel.ZIndex = 2147483647
+    descLabel.Parent = toggleFrame
+
+    local switch = Instance.new("Frame")
+    switch.Size = UDim2.new(0, 40, 0, 20)
+    switch.Position = UDim2.new(1, -50, 0.5, -10)
+    switch.BackgroundColor3 = defaultState and Color3.fromRGB(137, 180, 250) or Color3.fromRGB(60, 60, 80)
+    switch.ZIndex = 2147483647
+    switch.Parent = toggleFrame
+
+    local switchCorner = Instance.new("UICorner")
+    switchCorner.CornerRadius = UDim.new(1, 0)
+    switchCorner.Parent = switch
+
+    local circle = Instance.new("Frame")
+    circle.Size = UDim2.new(0, 16, 0, 16)
+    circle.Position = defaultState and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
+    circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    circle.ZIndex = 2147483647
+    circle.Parent = switch
+
+    local circleCorner = Instance.new("UICorner")
+    circleCorner.CornerRadius = UDim.new(1, 0)
+    circleCorner.Parent = circle
+
+    local toggled = defaultState
+
+    toggleFrame.MouseButton1Click:Connect(function()
+        toggled = not toggled
+        switch.BackgroundColor3 = toggled and Color3.fromRGB(137, 180, 250) or Color3.fromRGB(60, 60, 80)
+        circle.Position = toggled and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
+        callback(toggled)
+    end)
+
+    parentPage.CanvasSize = UDim2.new(0, 0, 0, parentPage.UIListLayout.AbsoluteContentSize.Y + 20)
+end
+
+local function addToggleSlider(parentPage, title, minVal, maxVal, defaultVal, callback)
+    local sliderFrame = Instance.new("Frame")
+    sliderFrame.Size = UDim2.new(1, 0, 0, 65)
+    sliderFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+    sliderFrame.ZIndex = 2147483647
+    sliderFrame.Parent = parentPage
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = sliderFrame
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, -110, 0, 20)
+    titleLabel.Position = UDim2.new(0, 10, 0, 4)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.Text = title
+    titleLabel.TextColor3 = Color3.fromRGB(205, 214, 244)
+    titleLabel.TextSize = 13
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.ZIndex = 2147483647
+    titleLabel.Parent = sliderFrame
+
+    local valueLabel = Instance.new("TextLabel")
+    valueLabel.Size = UDim2.new(0, 50, 0, 20)
+    valueLabel.Position = UDim2.new(1, -120, 0, 4)
+    valueLabel.BackgroundTransparency = 1
+    valueLabel.Font = Enum.Font.GothamBold
+    valueLabel.Text = tostring(defaultVal)
+    valueLabel.TextColor3 = Color3.fromRGB(137, 180, 250)
+    valueLabel.TextSize = 13
+    valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+    valueLabel.ZIndex = 2147483647
+    valueLabel.Parent = sliderFrame
+
+    local switch = Instance.new("Frame")
+    switch.Size = UDim2.new(0, 40, 0, 20)
+    switch.Position = UDim2.new(1, -50, 0, 4)
+    switch.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+    switch.ZIndex = 2147483647
+    switch.Parent = sliderFrame
+
+    local switchCorner = Instance.new("UICorner")
+    switchCorner.CornerRadius = UDim.new(1, 0)
+    switchCorner.Parent = switch
+
+    local circle = Instance.new("Frame")
+    circle.Size = UDim2.new(0, 16, 0, 16)
+    circle.Position = UDim2.new(0, 2, 0.5, -8)
+    circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    circle.ZIndex = 2147483647
+    circle.Parent = switch
+
+    local circleCorner = Instance.new("UICorner")
+    circleCorner.CornerRadius = UDim.new(1, 0)
+    circleCorner.Parent = circle
+
+    local sliderBar = Instance.new("Frame")
+    sliderBar.Size = UDim2.new(1, -20, 0, 6)
+    sliderBar.Position = UDim2.new(0, 10, 0, 42)
+    sliderBar.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+    sliderBar.BorderSizePixel = 0
+    sliderBar.ZIndex = 2147483647
+    sliderBar.Parent = sliderFrame
+
+    local barCorner = Instance.new("UICorner")
+    barCorner.CornerRadius = UDim.new(1, 0)
+    barCorner.Parent = sliderBar
+
+    local sliderFill = Instance.new("Frame")
+    sliderFill.Size = UDim2.new((defaultVal - minVal) / (maxVal - minVal), 0, 1, 0)
+    sliderFill.BackgroundColor3 = Color3.fromRGB(137, 180, 250)
+    sliderFill.BorderSizePixel = 0
+    sliderFill.ZIndex = 2147483647
+    sliderFill.Parent = sliderBar
+
+    local fillCorner = Instance.new("UICorner")
+    fillCorner.CornerRadius = UDim.new(1, 0)
+    fillCorner.Parent = sliderFill
+
+    local UserInputService = game:GetService("UserInputService")
+    local dragging = false
+    local enabled = false
+    local currentValue = defaultVal
+
+    local function updateValue(input)
+        local pos = sliderBar.AbsolutePosition.X
+        local size = sliderBar.AbsoluteSize.X
+        local mouseX = input.Position.X
+        local scale = math.clamp((mouseX - pos) / size, 0, 1)
+        currentValue = math.floor(minVal + ((maxVal - minVal) * scale))
+        
+        sliderFill.Size = UDim2.new(scale, 0, 1, 0)
+        valueLabel.Text = tostring(currentValue)
+        
+        if enabled then
+            callback(currentValue, true)
+        end
+    end
+
+    sliderBar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            updateValue(input)
+        end
+    end)
+
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            updateValue(input)
+        end
+    end)
+
+    local toggleButtonHitbox = Instance.new("TextButton")
+    toggleButtonHitbox.Size = UDim2.new(1, 0, 1, 0)
+    toggleButtonHitbox.BackgroundTransparency = 1
+    toggleButtonHitbox.Text = ""
+    toggleButtonHitbox.ZIndex = 2147483647
+    toggleButtonHitbox.Parent = switch
+
+    toggleButtonHitbox.MouseButton1Click:Connect(function()
+        enabled = not enabled
+        switch.BackgroundColor3 = enabled and Color3.fromRGB(137, 180, 250) or Color3.fromRGB(60, 60, 80)
+        circle.Position = enabled and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
+        callback(currentValue, enabled)
+    end)
+
+    parentPage.CanvasSize = UDim2.new(0, 0, 0, parentPage.UIListLayout.AbsoluteContentSize.Y + 20)
+end
+
+local function addInputBox(parentPage, title, description, placeholder, callback)
+    local inputFrame = Instance.new("Frame")
+    inputFrame.Size = UDim2.new(1, 0, 0, 65)
+    inputFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+    inputFrame.ZIndex = 2147483647
+    inputFrame.Parent = parentPage
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = inputFrame
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, -15, 0, 20)
+    titleLabel.Position = UDim2.new(0, 10, 0, 4)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.Text = title
+    titleLabel.TextColor3 = Color3.fromRGB(205, 214, 244)
+    titleLabel.TextSize = 13
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.ZIndex = 2147483647
+    titleLabel.Parent = inputFrame
+
+    local textBox = Instance.new("TextBox")
+    textBox.Size = UDim2.new(1, -20, 0, 30)
+    textBox.Position = UDim2.new(0, 10, 0, 28)
+    textBox.BackgroundColor3 = Color3.fromRGB(25, 25, 38)
+    textBox.TextColor3 = Color3.fromRGB(205, 214, 244)
+    textBox.PlaceholderText = placeholder
+    textBox.Text = ""
+    textBox.TextSize = 12
+    textBox.Font = Enum.Font.Gotham
+    textBox.ZIndex = 2147483647
+    textBox.Parent = inputFrame
+
+    local boxCorner = Instance.new("UICorner")
+    boxCorner.CornerRadius = UDim.new(0, 6)
+    boxCorner.Parent = textBox
+
+    textBox.FocusLost:Connect(function(enterPressed)
+        callback(textBox.Text)
+    end)
+
+    parentPage.CanvasSize = UDim2.new(0, 0, 0, parentPage.UIListLayout.AbsoluteContentSize.Y + 20)
+end
+
+local function addDropdown(parentPage, title, items, defaultItem, callback)
+    local dropFrame = Instance.new("Frame")
+    dropFrame.Size = UDim2.new(1, 0, 0, 65)
+    dropFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+    dropFrame.ZIndex = 2147483647
+    dropFrame.Parent = parentPage
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = dropFrame
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, -15, 0, 20)
+    titleLabel.Position = UDim2.new(0, 10, 0, 4)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.Text = title
+    titleLabel.TextColor3 = Color3.fromRGB(205, 214, 244)
+    titleLabel.TextSize = 13
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.ZIndex = 2147483647
+    titleLabel.Parent = dropFrame
+
+    local selectButton = Instance.new("TextButton")
+    selectButton.Size = UDim2.new(1, -20, 0, 30)
+    selectButton.Position = UDim2.new(0, 10, 0, 28)
+    selectButton.BackgroundColor3 = Color3.fromRGB(25, 25, 38)
+    selectButton.TextColor3 = Color3.fromRGB(137, 180, 250)
+    selectButton.Text = tostring(defaultItem)
+    selectButton.TextSize = 12
+    selectButton.Font = Enum.Font.GothamBold
+    selectButton.ZIndex = 2147483647
+    selectButton.Parent = dropFrame
+
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 6)
+    btnCorner.Parent = selectButton
+
+    local listFrame = Instance.new("ScrollingFrame")
+    listFrame.Size = UDim2.new(1, -20, 0, 0)
+    listFrame.Position = UDim2.new(0, 10, 0, 60)
+    listFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+    listFrame.BorderSizePixel = 0
+    listFrame.Visible = false
+    listFrame.ZIndex = 2147483648
+    listFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    listFrame.ScrollBarThickness = 3
+    listFrame.Parent = dropFrame
+
+    local listCorner = Instance.new("UICorner")
+    listCorner.CornerRadius = UDim.new(0, 6)
+    listCorner.Parent = listFrame
+
+    local listLayout = Instance.new("UIListLayout")
+    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    listLayout.Parent = listFrame
+
+    local isOpen = false
+    local selectedValue = defaultItem
+
+    local function refreshItems(newItems)
+        for _, c in ipairs(listFrame:GetChildren()) do
+            if c:IsA("TextButton") then c:Destroy() end
+        end
+        for _, item in ipairs(newItems) do
+            local itemBtn = Instance.new("TextButton")
+            itemBtn.Size = UDim2.new(1, 0, 0, 25)
+            itemBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+            itemBtn.TextColor3 = Color3.fromRGB(205, 214, 244)
+            itemBtn.Text = tostring(item)
+            itemBtn.TextSize = 11
