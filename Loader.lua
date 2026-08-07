@@ -1,2 +1,2 @@
---มึงจะขโมยสคริปของกูหรอกูไม่ให้หรอก🖕🖕
-loadstring(game:HttpGet("https://prometheus.bonkhub.online/raw/e3f17956b2661309"))()
+--มึงจะขโมยสคริปของกูหรอกูไม่ให้หรอกมึงหาวิธีเอาเองนะไอ้สัส🖕🖕
+loadstring(game:HttpGet("https://prometheus.bonkhub.online/raw/725a33ff78c48683"))()
