@@ -1,2 +1,2 @@
---มึงเอาไปเลยสคริปกู
-loadstring(game:HttpGet("https://prometheus.bonkhub.online/raw/71eb7a59e9035547"))()
+--ใครเอาไปโดนกูตอกเกย์
+loadstring(game:HttpGet("https://prometheus.bonkhub.online/raw/8ab1bf3b786a0bb3"))()
